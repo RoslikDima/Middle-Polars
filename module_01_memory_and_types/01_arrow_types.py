@@ -1,21 +1,31 @@
 import pandas as pd
 import polars as pl
 
-# 1. Исходные "сырые" данные
+# Исходные данные
 data = {
     "user_id": [101, 102, None, 104],
     "status": ["active", "banned", "active", "active"],
     "city": ["Москва", "Самара", "Казань", "Москва"]
 }
 
-# 2. Pandas 2.0 (PyArrow backend + категориальный тип)
-df_pd = pd.DataFrame(data).astype({
+# =====================================================================
+# РЕШЕНИЕ АВТОРА (Pandas 2.0):
+# =====================================================================
+df = pd.DataFrame(data)
+
+df = df.astype({
     "user_id": "int64[pyarrow]",
     "status": "category",
     "city": "string[pyarrow]"
 })
 
-# 3. Polars (Apache Arrow нативная схема)
+print("--- Авторское решение (Pandas 2.0 dtypes) ---")
+print(df.dtypes)
+print(df)
+
+# =====================================================================
+# ЭТАЛОННОЕ РЕШЕНИЕ НА POLARS:
+# =====================================================================
 df_pl = pl.DataFrame(
     data,
     schema={
@@ -25,8 +35,6 @@ df_pl = pl.DataFrame(
     }
 )
 
-if __name__ == "__main__":
-    print("--- Pandas 2.0 dtypes ---")
-    print(df_pd.dtypes)
-    print("\n--- Polars schema ---")
-    print(df_pl.schema)
+print("\n--- Аналог в Polars (Arrow Schema) ---")
+print(df_pl.schema)
+print(df_pl)
