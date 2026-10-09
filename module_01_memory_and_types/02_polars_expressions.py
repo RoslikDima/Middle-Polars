@@ -1,6 +1,5 @@
 import polars as pl
 
-# Исходные данные
 employees = {
     "employee_id": [10, 11, 12, 13, 14],
     "name": ["Анна", "Борис", "Виктор", "Дарья", "Елена"],
@@ -10,15 +9,11 @@ employees = {
 
 df_emp = pl.DataFrame(employees)
 
-# =====================================================================
-# РЕШЕНИЕ АВТОРА (Polars filter + with_columns + alias):
-# =====================================================================
+# Решение автора:
 df_salary = df_emp.filter(
     pl.col("salary") > 50000
 ).with_columns(
     (pl.col("salary") * pl.col("bonus_pct")).alias("total_bonus")
 )
 
-if __name__ == "__main__":
-    print("--- Результат вычислений Polars ---")
-    print(df_salary)
+print(df_salary)
